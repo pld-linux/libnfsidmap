@@ -1,12 +1,12 @@
 Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl):	Biblioteka pomagaj±ca w mapowaniu identyfikatorów, g³ównie dla NFSv4
 Name:		libnfsidmap
-Version:	0.18
+Version:	0.19
 Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
-# Source0-md5:	f364d649196ae26ea6dc9184ea754f4c
+# Source0-md5:	9c2eb85fc8ff533d8b05d37651a30c9d
 URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
 BuildRequires:	openldap-devel >= 2.3.0
 Obsoletes:	nfsidmap
