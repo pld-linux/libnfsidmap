@@ -1,5 +1,5 @@
 Summary:	Library to help mapping id's, mainly for NFSv4
-Summary(pl):	Biblioteka pomagaj眂a w mapowaniu identyfikator體, g丑wnie dla NFSv4
+Summary(pl.UTF-8):   Biblioteka pomagaj膮ca w mapowaniu identyfikator贸w, g艂贸wnie dla NFSv4
 Name:		libnfsidmap
 Version:	0.19
 Release:	1
@@ -15,12 +15,12 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Library to help mapping id's, mainly for NFSv4.
 
-%description -l pl
-Biblioteka pomagaj眂a w mapowaniu identyfikator體, g丑wnie dla NFSv4.
+%description -l pl.UTF-8
+Biblioteka pomagaj膮ca w mapowaniu identyfikator贸w, g艂贸wnie dla NFSv4.
 
 %package devel
 Summary:	Header files for libnfsidmap library
-Summary(pl):	Pliki nag丑wkowe biblioteki libnfsidmap
+Summary(pl.UTF-8):   Pliki nag艂贸wkowe biblioteki libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	openldap-devel >= 2.3.0
@@ -29,12 +29,12 @@ Obsoletes:	nfsidmap-devel
 %description devel
 Header files for libnfsidmap library.
 
-%description devel -l pl
-Pliki nag丑wkowe biblioteki libnfsidmap.
+%description devel -l pl.UTF-8
+Pliki nag艂贸wkowe biblioteki libnfsidmap.
 
 %package static
 Summary:	Static libnfsidmap library
-Summary(pl):	Statyczna biblioteka libnfsidmap
+Summary(pl.UTF-8):   Statyczna biblioteka libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Obsoletes:	nfsidmap-static
@@ -42,7 +42,7 @@ Obsoletes:	nfsidmap-static
 %description static
 Static libnfsidmap library.
 
-%description static -l pl
+%description static -l pl.UTF-8
 Statyczna biblioteka libnfsidmap.
 
 %prep
