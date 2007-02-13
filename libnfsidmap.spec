@@ -1,5 +1,5 @@
 Summary:	Library to help mapping id's, mainly for NFSv4
-Summary(pl.UTF-8):   Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
+Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
 Version:	0.19
 Release:	1
@@ -20,7 +20,7 @@ Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4.
 
 %package devel
 Summary:	Header files for libnfsidmap library
-Summary(pl.UTF-8):   Pliki nagłówkowe biblioteki libnfsidmap
+Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
 Requires:	openldap-devel >= 2.3.0
@@ -34,7 +34,7 @@ Pliki nagłówkowe biblioteki libnfsidmap.
 
 %package static
 Summary:	Static libnfsidmap library
-Summary(pl.UTF-8):   Statyczna biblioteka libnfsidmap
+Summary(pl.UTF-8):	Statyczna biblioteka libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name}-devel = %{version}-%{release}
 Obsoletes:	nfsidmap-static
