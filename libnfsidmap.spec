@@ -8,7 +8,7 @@ Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
 # Source0-md5:	9233cb77876eb642374a0d2bcaba1170
 URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
-BuildRequires:	openldap-devel >= 2.3.0
+BuildRequires:	openldap-devel >= 2.4.6
 Obsoletes:	nfsidmap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -23,7 +23,7 @@ Summary:	Header files for libnfsidmap library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	openldap-devel >= 2.3.0
+Requires:	openldap-devel >= 2.4.6
 Obsoletes:	nfsidmap-devel
 
 %description devel
