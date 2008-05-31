@@ -68,6 +68,7 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING README
 %attr(755,root,root) %{_libdir}/libnfsidmap.so.*.*.*
+%attr(755,root,root) %ghost %{_libdir}/libnfsidmap.so.0
 
 %files devel
 %defattr(644,root,root,755)
@@ -75,7 +76,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}/libnfsidmap.la
 %{_includedir}/nfsidmap.h
 %{_pkgconfigdir}/libnfsidmap.pc
-%{_mandir}/man3/*.3*
+%{_mandir}/man3/nfs4_uid_to_name.3*
 
 %files static
 %defattr(644,root,root,755)
