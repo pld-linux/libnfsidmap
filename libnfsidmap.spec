@@ -1,12 +1,12 @@
 Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
-Version:	0.20
-Release:	2
+Version:	0.21
+Release:	1
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
-# Source0-md5:	9233cb77876eb642374a0d2bcaba1170
+# Source0-md5:	56b05e30645353befbf73bd905270d4b
 URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
 BuildRequires:	openldap-devel >= 2.4.6
 Obsoletes:	nfsidmap
@@ -23,7 +23,6 @@ Summary:	Header files for libnfsidmap library
 Summary(pl.UTF-8):	Pliki nagłówkowe biblioteki libnfsidmap
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{release}
-Requires:	openldap-devel >= 2.4.6
 Obsoletes:	nfsidmap-devel
 
 %description devel
@@ -58,6 +57,8 @@ rm -rf $RPM_BUILD_ROOT
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
+rm $RPM_BUILD_ROOT%{_libdir}/libnfsidmap_*.{a,la}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -66,9 +67,24 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(644,root,root,755)
-%doc AUTHORS COPYING README
+%doc AUTHORS COPYING ChangeLog README
 %attr(755,root,root) %{_libdir}/libnfsidmap.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libnfsidmap.so.0
+# symlinks becaue of missing -avoid-version
+%attr(755,root,root) %{_libdir}/libnfsidmap_nsswitch.so
+%attr(755,root,root) %ghost %{_libdir}/libnfsidmap_nsswitch.so.0
+%attr(755,root,root) %{_libdir}/libnfsidmap_nsswitch.so.*.*.*
+%attr(755,root,root) %{_libdir}/libnfsidmap_static.so
+%attr(755,root,root) %ghost %{_libdir}/libnfsidmap_static.so.0
+%attr(755,root,root) %{_libdir}/libnfsidmap_static.so.*.*.*
+# -plugin-ldap subpackage?
+%attr(755,root,root) %{_libdir}/libnfsidmap_umich_ldap.so
+%attr(755,root,root) %ghost %{_libdir}/libnfsidmap_umich_ldap.so.0
+%attr(755,root,root) %{_libdir}/libnfsidmap_umich_ldap.so.*.*.*
+# -plugin-gums subpackage (BR: some datagrid software - VOMS?)
+#%attr(755,root,root) %{_libdir}/libnfsidmap_gums.so
+#%attr(755,root,root) %ghost %{_libdir}/libnfsidmap_gums.so.0
+#%attr(755,root,root) %{_libdir}/libnfsidmap_gums.so.*.*.*
 
 %files devel
 %defattr(644,root,root,755)
