@@ -2,12 +2,15 @@ Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
 Version:	0.21
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
 # Source0-md5:	56b05e30645353befbf73bd905270d4b
 URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
+Patch0:		%{name}-idmapd.conf.patch
+Patch1:		%{name}-default-domain.patch
+Patch2:		%{name}-nss-localrealms.patch
 BuildRequires:	openldap-devel >= 2.4.6
 Obsoletes:	nfsidmap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -46,6 +49,9 @@ Statyczna biblioteka libnfsidmap.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+%patch2 -p1
 
 %build
 %configure
@@ -53,9 +59,12 @@ Statyczna biblioteka libnfsidmap.
 
 %install
 rm -rf $RPM_BUILD_ROOT
+install -d $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
+
+install idmapd.conf $RPM_BUILD_ROOT%{_sysconfdir}/
 
 rm $RPM_BUILD_ROOT%{_libdir}/libnfsidmap_*.{a,la}
 
@@ -68,6 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING ChangeLog README
+%attr(660,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/idmapd.conf
 %attr(755,root,root) %{_libdir}/libnfsidmap.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libnfsidmap.so.0
 # symlinks becaue of missing -avoid-version
