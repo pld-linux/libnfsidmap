@@ -2,7 +2,7 @@ Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
 Version:	0.21
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
@@ -77,7 +77,7 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING ChangeLog README
-%attr(660,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/idmapd.conf
+%attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/idmapd.conf
 %attr(755,root,root) %{_libdir}/libnfsidmap.so.*.*.*
 %attr(755,root,root) %ghost %{_libdir}/libnfsidmap.so.0
 # symlinks becaue of missing -avoid-version
