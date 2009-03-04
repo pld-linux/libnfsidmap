@@ -1,0 +1,120 @@
+diff -up libnfsidmap/idmapd.conf.orig libnfsidmap/idmapd.conf
+--- libnfsidmap/idmapd.conf.orig	2008-10-24 11:33:14.000000000 -0400
++++ libnfsidmap/idmapd.conf	2008-10-24 11:33:23.000000000 -0400
+@@ -1,6 +1,17 @@
+ #Domain = localdomain
+ 
+ #Cache-Expiration = 600
++
++# The following is a comma-separated list of Kerberos realm
++# names that should be considered to be equivalent to the
++# local realm, such that <user>@REALM.A can be assumed to
++# be the same user as <user>@REALM.B
++# If not specified, the default local realm is the domain name,
++# which defaults to the host's DNS domain name,
++# translated to upper-case.
++# Note that if this value is specified, the local realm name
++# must be included in the list!
++#Local-Realms =
+ 
+ [Mapping]
+ 
+diff -up libnfsidmap/libnfsidmap.c.orig libnfsidmap/libnfsidmap.c
+--- libnfsidmap/libnfsidmap.c.orig	2008-10-24 11:33:14.000000000 -0400
++++ libnfsidmap/libnfsidmap.c	2008-10-24 11:33:23.000000000 -0400
+@@ -86,6 +86,14 @@ static void default_logger(const char *f
+ }
+ nfs4_idmap_log_function_t idmap_log_func = default_logger;
+ 
++static char * toupper_str(char *s)
++{
++       int i;
++       for (i=0; i < strlen(s); i++)
++               s[i] = toupper(s[i]);
++       return s;
++}
++
+ static int domain_from_dns(char **domain)
+ {
+ 	struct hostent *he;
+@@ -232,7 +240,31 @@ int nfs4_init_name_mapping(char *conffil
+ 	IDMAP_LOG(1, ("libnfsidmap: using%s domain: %s\n",
+ 		(dflt ? " (default)" : ""), default_domain));
+ 
++	/* Get list of "local equivalent" realms.  Meaning the list of realms
++	 * where john@REALM.A is considered the same user as john@REALM.B
++	 * If not specified, default to upper-case of local domain name */
+ 	local_realms = conf_get_list("General", "Local-Realms");
++	if (local_realms == NULL) {
++		struct conf_list_node *node;
++
++		local_realms = malloc(sizeof *local_realms);
++		if (local_realms == NULL)
++			return -ENOMEM;
++		local_realms->cnt = 0;
++		TAILQ_INIT(&local_realms->fields);
++
++		node = calloc(1, sizeof *node);
++		if (node == NULL)
++			return -ENOMEM;
++		node->field = strdup(get_default_domain());
++		if (node->field == NULL)
++			return -ENOMEM;
++		toupper_str(node->field);
++
++		TAILQ_INSERT_TAIL(&local_realms->fields, node, link);
++		local_realms->cnt++;
++	}
++
+ 
+ 	nfs4_methods = conf_get_list("Translation", "Method");
+ 	if (nfs4_methods) {
+diff -up libnfsidmap/nss.c.orig libnfsidmap/nss.c
+--- libnfsidmap/nss.c.orig	2008-03-27 16:47:51.000000000 -0400
++++ libnfsidmap/nss.c	2008-10-24 11:33:48.000000000 -0400
+@@ -275,6 +275,7 @@ static int nss_gss_princ_to_ids(char *se
+ 	char *princ_realm;
+ 	struct conf_list *realms;
+ 	struct conf_list_node *r;
++	int found = 0;
+ 
+ 	if (strcmp(secname, "spkm3") == 0)
+ 		return -ENOENT;
+@@ -288,28 +289,18 @@ static int nss_gss_princ_to_ids(char *se
+ 		return -EINVAL;
+ 	princ_realm++;
+ 
+-	/* get accepted realms */
++	/* get list of "local-equivalent" realms and
++	 * check against the principal's realm */
+ 	realms = get_local_realms();
+-	if (realms) {
+-		int found = 0;
+-		for (r = TAILQ_FIRST(&realms->fields); r;
+-		     r = TAILQ_NEXT(r, link)) {
+-			if (strlen(r->field) == strlen(princ_realm) &&
+-				!strcmp(r->field, princ_realm)) {
+-				found = 1;
+-				break;
+-			}
++	TAILQ_FOREACH(r, &realms->fields, link) {
++		if (strcmp(r->field, princ_realm) == 0) {
++			found = 1;
++			break;
+ 		}
+-		if (!found)
+-			return -EINVAL;
+-	} else {
+-		char *domain;
+-		domain = get_default_domain();
+-		domain = toupper_str(domain);
+-		if (strlen(princ_realm) != strlen(domain) ||
+-			strcmp(princ_realm, domain))
+-			return -EINVAL;
+ 	}
++	if (!found)
++		return -ENOENT;
++
+ 	/* XXX: this should call something like getgssauthnam instead? */
+ 	pw = nss_getpwnam(princ, NULL, &err);
+ 	if (pw == NULL) {
