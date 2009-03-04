@@ -5,7 +5,7 @@
  #Verbosity = 0
  # The following should be set to the local NFSv4 domain name (REQUIRED)
 -Domain = local.domain.edu
-+# Commented out so DNS will beused to define the domainname
++# The default is the host's DNS domain name.
 +#Domain = localdomain
 +
 +#Cache-Expiration = 600
