@@ -11,7 +11,8 @@ URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
 Patch0:		%{name}-idmapd.conf.patch
 Patch1:		%{name}-default-domain.patch
 Patch2:		%{name}-nss-localrealms.patch
-BuildRequires:	openldap-devel >= 2.4.6
+Patch3:		%{name}-user@domain.patch
+BuildRequires:	openldap-devel
 Obsoletes:	nfsidmap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
@@ -52,6 +53,7 @@ Statyczna biblioteka libnfsidmap.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 %configure
