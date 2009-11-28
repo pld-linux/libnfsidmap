@@ -7,14 +7,16 @@ License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
 # Source0-md5:	56b05e30645353befbf73bd905270d4b
-URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
 Patch0:		%{name}-idmapd.conf.patch
 Patch1:		%{name}-default-domain.patch
 Patch2:		%{name}-nss-localrealms.patch
 Patch3:		%{name}-user@domain.patch
+URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
 BuildRequires:	openldap-devel
 Obsoletes:	nfsidmap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
+
+%undefine	__cxx
 
 %description
 Library to help mapping id's, mainly for NFSv4.
