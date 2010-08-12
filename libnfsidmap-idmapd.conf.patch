@@ -1,15 +1,11 @@
---- libnfsidmap-0.21/idmapd.conf~	2008-03-28 16:40:35.000000000 +0100
-+++ libnfsidmap-0.21/idmapd.conf	2009-03-04 23:24:34.000000000 +0100
-@@ -1,12 +1,15 @@
- [General]
- #Verbosity = 0
- # The following should be set to the local NFSv4 domain name (REQUIRED)
--Domain = local.domain.edu
-+# The default is the host's DNS domain name.
-+#Domain = localdomain
-+
-+#Cache-Expiration = 600
+--- libnfsidmap-0.23/idmapd.conf.orig	2009-07-29 22:19:06.000000000 +0200
++++ libnfsidmap-0.23/idmapd.conf	2010-08-12 20:46:04.110823295 +0200
+@@ -15,10 +15,12 @@
+ # must be included in the list!
+ #Local-Realms = 
  
++#Cache-Expiration = 600
++  
  [Mapping]
  
 -#Nobody-User = nobody
@@ -19,7 +15,7 @@
  
  [Translation]
  
-@@ -16,7 +18,7 @@
+@@ -28,7 +30,7 @@
  # is a dynamically loadable plugin library.
  # New methods may be defined and inserted in the list.
  # The default is "nsswitch".
@@ -28,7 +24,7 @@
  
  # Optional.  This is a comma-separated, ordered list of
  # translation methods to be used for translating GSS
-@@ -40,13 +42,13 @@
+@@ -52,13 +54,13 @@
  # The following are used only for the "umich_ldap" Translation Method.
  #-------------------------------------------------------------------#
  
