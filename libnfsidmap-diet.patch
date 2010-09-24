@@ -1,0 +1,64 @@
+--- libnfsidmap-0.23/nss.c~	2010-09-24 18:12:33.474464553 +0200
++++ libnfsidmap-0.23/nss.c	2010-09-24 18:16:13.001464555 +0200
+@@ -73,7 +73,11 @@
+ 	struct passwd *pw = NULL;
+ 	struct passwd pwbuf;
+ 	char *buf;
++#ifdef __dietlibc__
++	size_t buflen = 1024;
++#else
+ 	size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
++#endif
+ 	int err = -ENOMEM;
+ 
+ 	buf = malloc(buflen);
+@@ -98,7 +102,11 @@
+ 	struct group *gr = NULL;
+ 	struct group grbuf;
+ 	char *buf;
++#ifdef __dietlibc__
++	size_t buflen = 1024;
++#else
+ 	size_t buflen = sysconf(_SC_GETGR_R_SIZE_MAX);
++#endif
+ 	int err;
+ 
+ 	if (domain == NULL)
+@@ -164,7 +172,11 @@
+ {
+ 	struct passwd *pw;
+ 	struct pwbuf *buf;
++#ifdef __dietlibc__
++	size_t buflen = 1024;
++#else
+ 	size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
++#endif
+ 	char *localname;
+ 	int err = ENOMEM;
+ 
+@@ -225,7 +237,11 @@
+ 	struct group *gr = NULL;
+ 	struct group grbuf;
+ 	char *buf, *localname, *domain;
++#ifdef __dietlibc__
++	size_t buflen = 1024;
++#else
+ 	size_t buflen = sysconf(_SC_GETGR_R_SIZE_MAX);
++#endif
+ 	int err = -EINVAL;
+ 
+ 	domain = get_default_domain();
+--- libnfsidmap-0.23/static.c~	2009-07-29 22:19:06.000000000 +0200
++++ libnfsidmap-0.23/static.c	2010-09-24 18:17:31.485464550 +0200
+@@ -62,7 +62,11 @@
+ {
+ 	struct passwd *pw;
+ 	struct pwbuf *buf;
++#ifdef __dietlibc__
++	size_t buflen = 1024;
++#else
+ 	size_t buflen = sysconf(_SC_GETPW_R_SIZE_MAX);
++#endif
+ 	char *localname;
+ 	int err;
+ 

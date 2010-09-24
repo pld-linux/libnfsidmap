@@ -1,20 +1,30 @@
+#
+# Conditional build:
+%bcond_without	dietlibc	# don't build static dietlibc library
+#
 Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
 Version:	0.23
-Release:	1
+Release:	2
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
 # Source0-md5:	28f3ece648c1dc5d25e8d623d55f8bd6
 Patch0:		%{name}-idmapd.conf.patch
 Patch1:		%{name}-user@domain.patch
+Patch2:		%{name}-diet.patch
 URL:		http://www.citi.umich.edu/projects/nfsv4/linux/
+%{?with_dietlibc:BuildRequires:	dietlibc-static >= 2:0.31-5}
 BuildRequires:	openldap-devel
 Obsoletes:	nfsidmap
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %undefine	__cxx
+
+# for some reason known only to rpm there must be "\\|" not "\|" here
+%define		dietarch	%(echo %{_target_cpu} | sed -e 's/i.86\\|pentium.\\|athlon/i386/;s/amd64/x86_64/;s/armv.*/arm/')
+%define		dietlibdir	%{_prefix}/lib/dietlibc/lib-%{dietarch}
 
 %description
 Library to help mapping id's, mainly for NFSv4.
@@ -48,23 +58,51 @@ Static libnfsidmap library.
 %description static -l pl.UTF-8
 Statyczna biblioteka libnfsidmap.
 
+%package dietlibc
+Summary:	Static dietlibc libnfsidmap library
+Summary(pl.UTF-8):	Biblioteka statyczna dietlibc libnfsidmap
+Group:		Development/Libraries
+Requires:	%{name}-devel = %{version}-%{release}
+
+%description dietlibc
+Static dietlibc libnfsidmap library.
+
+%description dietlibc -l pl.UTF-8
+Biblioteka statyczna dietlibc libnfsidmap.
+
 %prep
 %setup -q
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %build
+%if %{with dietlibc}
+%configure \
+	CC="diet %{__cc} %{rpmcflags} %{rpmldflags} -Os -D_BSD_SOURCE -D_GNU_SOURCE" \
+	--enable-static \
+	--disable-shared \
+	--disable-ldap
+
+%{__make}
+mv .libs/libnfsidmap.a diet-libnfsidmap.a
+%{__make} clean
+%endif
+
 %configure
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
 install -d $RPM_BUILD_ROOT%{_sysconfdir}
+%{?with_dietlibc:install -d $RPM_BUILD_ROOT%{dietlibdir}}
 
 %{__make} install \
 	DESTDIR=$RPM_BUILD_ROOT
 
 install idmapd.conf $RPM_BUILD_ROOT%{_sysconfdir}
+
+%{?with_dietlibc:install diet-libnfsidmap.a $RPM_BUILD_ROOT%{dietlibdir}/libnfsidmap.a}
 
 %{__rm} $RPM_BUILD_ROOT%{_libdir}/libnfsidmap/*.{a,la}
 
@@ -100,3 +138,9 @@ rm -rf $RPM_BUILD_ROOT
 %files static
 %defattr(644,root,root,755)
 %{_libdir}/libnfsidmap.a
+
+%if %{with dietlibc}
+%files dietlibc
+%defattr(644,root,root,755)
+%{dietlibdir}/libnfsidmap.a
+%endif
