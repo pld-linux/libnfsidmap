@@ -6,7 +6,7 @@ Summary:	Library to help mapping id's, mainly for NFSv4
 Summary(pl.UTF-8):	Biblioteka pomagająca w mapowaniu identyfikatorów, głównie dla NFSv4
 Name:		libnfsidmap
 Version:	0.25
-Release:	2
+Release:	3
 License:	BSD
 Group:		Libraries
 Source0:	http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/%{name}-%{version}.tar.gz
@@ -90,12 +90,12 @@ mv .libs/libnfsidmap.a diet-libnfsidmap.a
 %endif
 
 %configure \
-	--with-pluginpath=%{_libdir}/libnfsidmap
+	--with-pluginpath=/%{_lib}/libnfsidmap
 %{__make}
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_sysconfdir}
+install -d $RPM_BUILD_ROOT{%{_sysconfdir},/%{_lib}}
 %{?with_dietlibc:install -d $RPM_BUILD_ROOT%{dietlibdir}}
 
 %{__make} install \
@@ -105,7 +105,13 @@ install idmapd.conf $RPM_BUILD_ROOT%{_sysconfdir}
 
 %{?with_dietlibc:install diet-libnfsidmap.a $RPM_BUILD_ROOT%{dietlibdir}/libnfsidmap.a}
 
-%{__rm} $RPM_BUILD_ROOT%{_libdir}/libnfsidmap/*.{a,la}
+mv $RPM_BUILD_ROOT%{_libdir}/libnfsidmap $RPM_BUILD_ROOT/%{_lib}
+mv -f $RPM_BUILD_ROOT%{_libdir}/libnfsidmap.so.* $RPM_BUILD_ROOT/%{_lib}
+ln -sf /%{_lib}/$(basename $RPM_BUILD_ROOT/%{_lib}/libnfsidmap.so.*.*.*) \
+	$RPM_BUILD_ROOT%{_libdir}/libnfsidmap.so
+
+%{__rm} $RPM_BUILD_ROOT/%{_lib}/libnfsidmap/*.{a,la}
+%{__rm} $RPM_BUILD_ROOT%{_libdir}/*.la
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -117,21 +123,20 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(644,root,root,755)
 %doc AUTHORS COPYING ChangeLog README
 %attr(644,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/idmapd.conf
-%attr(755,root,root) %{_libdir}/libnfsidmap.so.*.*.*
-%attr(755,root,root) %ghost %{_libdir}/libnfsidmap.so.0
-%dir %{_libdir}/libnfsidmap
-%attr(755,root,root) %{_libdir}/libnfsidmap/nsswitch.so
-%attr(755,root,root) %{_libdir}/libnfsidmap/static.so
+%attr(755,root,root) /%{_lib}/libnfsidmap.so.*.*.*
+%attr(755,root,root) %ghost /%{_lib}/libnfsidmap.so.0
+%dir /%{_lib}/libnfsidmap
+%attr(755,root,root) /%{_lib}/libnfsidmap/nsswitch.so
+%attr(755,root,root) /%{_lib}/libnfsidmap/static.so
 # -plugin-ldap subpackage?
-%attr(755,root,root) %{_libdir}/libnfsidmap/umich_ldap.so
+%attr(755,root,root) /%{_lib}/libnfsidmap/umich_ldap.so
 # -plugin-gums subpackage (BR: some datagrid software - VOMS?)
-#%attr(755,root,root) %{_libdir}/libnfsidmap/gums.so
+#%attr(755,root,root) /%{_lib}/libnfsidmap/gums.so
 %{_mandir}/man5/idmapd.conf.5*
 
 %files devel
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_libdir}/libnfsidmap.so
-%{_libdir}/libnfsidmap.la
 %{_includedir}/nfsidmap.h
 %{_pkgconfigdir}/libnfsidmap.pc
 %{_mandir}/man3/nfs4_uid_to_name.3*
